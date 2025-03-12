@@ -1,19 +1,53 @@
 services:
   backend:
     build: ./backend
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    networks:
+      - job-scraper
 
   db:
-    image: postgres:13
-    restart: always
+    image: mariadb
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: jobs_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: job_scrapper
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
     ports:
-      - "5432:5432"
+        - "3306:3306"
+    volumes:
+        - ./db:/var/lib/mysql
+    networks:
+      - job-scraper
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
+      start_period: 1m
+      start_interval: 10s
+      interval: 1m
+      timeout: 5s
+      retries: 3
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+    depends_on:
+      - db
+    networks:
+      - job-scraper
+
+volumes:
+    db:
+
+networks:
+  job-scraper:

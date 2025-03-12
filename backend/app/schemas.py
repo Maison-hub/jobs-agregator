@@ -1,10 +1,11 @@
+from typing import Optional
 from pydantic import BaseModel
 
 class JobBase(BaseModel):
     title: str
     company: str
-    location: str
     url: str
+    location: Optional[str] = None
 
 class JobCreate(JobBase):
     pass

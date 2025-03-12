@@ -1,6 +1,9 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from app import database, crud, models, schemas
+from app import database, models, crud ,schemas
+from app.scrapers.WelcomeToTheJungleScraper import WelcomeToTheJungleScraper
+import asyncio
+import json
 
 app = FastAPI()
 
@@ -14,3 +17,15 @@ def read_root():
 @app.get("/jobs", response_model=list[schemas.Job])
 def get_jobs(db: Session = Depends(database.get_db)):
     return crud.get_jobs(db)
+
+@app.get("/test")
+async def test():
+    scraper = WelcomeToTheJungleScraper()
+    jobs = await scraper.scrape_jobs()
+    return jobs
+
+@app.get("/scrape")
+async def scrape_and_store_jobs(db: Session = Depends(database.get_db)):
+    scraper = WelcomeToTheJungleScraper()
+    jobs = await scraper.scrape_jobs(db= db)
+    return jobs
