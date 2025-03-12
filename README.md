@@ -1,0 +1,1 @@
+Simple agregator of jobs app
