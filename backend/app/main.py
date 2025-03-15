@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from app import database, models, crud ,schemas
+from .router import scrape
 from app.scrapers.WelcomeToTheJungleScraper import WelcomeToTheJungleScraper
 import asyncio
 import json
