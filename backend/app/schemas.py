@@ -1,17 +1,17 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class JobBase(BaseModel):
     title: str
     company: str
     url: str
     location: Optional[str] = None
+    description: Optional[str] = None
+    liked: Optional[bool] = False
 
 class JobCreate(JobBase):
     pass
 
 class Job(JobBase):
     id: int
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
