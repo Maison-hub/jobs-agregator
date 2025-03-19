@@ -10,6 +10,7 @@ class ScraperOptions(TypedDict):
     url: str
     results_selector: str
     title_selector: str
+    location_selector: Optional[str]
     company_selector: str
     link_selector: str
     base_url: str
@@ -40,15 +41,20 @@ class AbstractScraper(ABC):
                     company = await (await offer.query_selector(options['company_selector'])).inner_text() if await offer.query_selector(options['company_selector']) else "N/A"
                     link = await (await offer.query_selector(options['link_selector'])).get_attribute("href") if await offer.query_selector(options['link_selector']) else "N/A"
 
+                    #Get Location
+                    location = None
+                    location_selector = options.get('location_selector')
+                    if location_selector:
+                        location = await (await offer.query_selector(location_selector)).inner_text() if await offer.query_selector(location_selector) else None
+
                     # Navigate to the offer's page to get the description
                     description = None
                     description_selector = options.get('description_selector')
-                    if description_selector:
+                    if description_selector and link != "N/A":
                         job_page = await browser.new_page()
                         await job_page.goto(f"{options['base_url']}{link}")
-                        await job_page.goto(f"{options['base_url']}{link}")
                         await job_page.wait_for_selector(description_selector)
-                        description = await job_page.locator(description_selector).inner_text()
+                        description = await job_page.locator(description_selector).first.inner_text()
                         await job_page.close()
 
                     job_data = schemas.JobCreate(
@@ -56,6 +62,7 @@ class AbstractScraper(ABC):
                         company=company.strip(),
                         url=f"{options['base_url']}{link}",
                         description=description.strip()  if description else None,
+                        location=location.strip() if location else None,
                     )
                     # existing_jobs = db.query(models.Job).filter_by(url=job_data.url).first()
                     # if not existing_jobs:

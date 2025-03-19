@@ -12,9 +12,11 @@ class HelloWorkScraper(AbstractScraper):
             "url": self.url,
             "results_selector": "ul[aria-label='liste des offres'] li",
             "title_selector": "h3 p",
+            "location_selector": "div[data-cy='localisationCard']",
             "company_selector": "h3 p:nth-child(2)",
             "link_selector": "header a",
-            "base_url": "https://www.hellowork.com"
+            "base_url": "https://www.hellowork.com",
+            "description_selector": "div.tw-mb-8>section:first-of-type"
         }
 
     # async def scrape_jobs(self, db: Session):

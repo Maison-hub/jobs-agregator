@@ -15,9 +15,11 @@ class WelcomeToTheJungleScraper(AbstractScraper):
             "url": self.forge_url(),
             "results_selector": "ul[data-testid='search-results'] li",
             "title_selector": "h4",
+            'location_selector': "i[name='location'] + p",
             "company_selector": "span.wui-text",
             "link_selector": "a",
-            "base_url": "https://www.welcometothejungle.com"
+            "base_url": "https://www.welcometothejungle.com",
+            "description_selector": "div[data-testid='job-section-description']"
         }
 
 
