@@ -1,6 +1,7 @@
 fastapi
 uvicorn
 sqlalchemy
+alembic
 pymysql
 playwright
 python-dotenv

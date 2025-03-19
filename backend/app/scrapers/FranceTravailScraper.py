@@ -17,7 +17,8 @@ class FranceTravailScraper(AbstractScraper):
             "title_selector": "h2 span",
             "company_selector": "p .subtext",
             "link_selector": "a",
-            "base_url": "https://candidat.francetravail.fr"
+            "base_url": "https://candidat.francetravail.fr",
+            "description_selector": "div.description p"
         }
 
 # Execute the scraper

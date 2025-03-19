@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, Text
 from app.database import Base
 
 class Job(Base):
@@ -9,5 +9,5 @@ class Job(Base):
     company = Column(String(200), index=True)
     location = Column(String(1000), index=True)
     url = Column(String(500), unique=True)
-    description = Column(String(2000))
+    description = Column(Text)
     liked = Column(Boolean, default=False)
