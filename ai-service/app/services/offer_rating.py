@@ -1,0 +1,1 @@
+#add here ai model to evaluate offer

@@ -16,6 +16,13 @@ services:
     networks:
       - job-scraper
 
+  ai-service:
+    build: ./ai-service
+    ports:
+      - "5000:5000"
+    networks:
+      - job-scraper
+
   db:
     image: mariadb
     environment:
