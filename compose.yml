@@ -18,10 +18,22 @@ services:
 
   ai-service:
     build: ./ai-service
+    volumes:
+      - ./ai-service:/app
     ports:
-      - "5000:5000"
+      - "3000:3000"
     networks:
       - job-scraper
+
+#  llama:
+#    image: ghcr.io/ggerganov/llama.cpp:full
+#    command: [ "--run", "./models/mistral-7b-instruct.Q5_K_M.gguf", "--host", "0.0.0.0", "--port", "8001" ]
+#    ports:
+#      - "8001:8001"
+#    volumes:
+#      - ./models:/models
+#    networks:
+#      - job-scraper
 
   db:
     image: mariadb
