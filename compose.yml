@@ -16,14 +16,36 @@ services:
     networks:
       - job-scraper
 
-  ai-service:
-    build: ./ai-service
-    volumes:
-      - ./ai-service:/app
+#  ollama:
+#    image: ollama/ollama:latest
+#    ports:
+#      - "11434:11434"
+#    volumes:
+#      - ./ollama:/root/.ollama
+#    container_name: ollama
+#    tty: true
+#    restart: unless-stopped
+#    networks:
+#      - job-scraper
+
+  ai:
+    build: ./ai
     ports:
-      - "3000:3000"
+      - "5001:5001"
+    volumes:
+      - ./ai:/app
+      - ./ollama:/root/.ollama
     networks:
       - job-scraper
+
+#  ai-service:
+#    build: ./ai-service
+#    volumes:
+#      - ./ai-service:/app
+#    ports:
+#      - "3000:3000"
+#    networks:
+#      - job-scraper
 
 #  llama:
 #    image: ghcr.io/ggerganov/llama.cpp:full
