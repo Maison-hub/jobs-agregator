@@ -8,6 +8,7 @@ class JobBase(BaseModel):
     location: Optional[str] = None
     description: Optional[str] = None
     liked: Optional[bool] = False
+    score: Optional[int] = None
 
 class JobCreate(JobBase):
     pass

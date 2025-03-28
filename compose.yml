@@ -34,7 +34,6 @@ services:
       - "5001:5001"
     volumes:
       - ./ai:/app
-      - ./ollama:/root/.ollama
     networks:
       - job-scraper
 

@@ -11,3 +11,4 @@ class Job(Base):
     url = Column(String(500), unique=True)
     description = Column(Text)
     liked = Column(Boolean, default=False)
+    score = Column(Integer, nullable=True)

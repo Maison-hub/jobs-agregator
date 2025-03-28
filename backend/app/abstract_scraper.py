@@ -35,6 +35,8 @@ class AbstractScraper(ABC):
             offers_locator = page.locator(options['results_selector'])
             offers = await offers_locator.element_handles()
 
+            print('Number of offers:', len(offers))
+            count = 0
             for offer in offers:
                 try:
                     title = await (await offer.query_selector(options['title_selector'])).inner_text() if await offer.query_selector(options['title_selector']) else "N/A"
@@ -68,6 +70,8 @@ class AbstractScraper(ABC):
                     # if not existing_jobs:
                     #     crud.add_job(db, job_data)
                     jobs.append(job_data)
+                    count += 1
+                    print(f"Scraped {count}/{len(offers)} offers")
                 except Exception as e:
                     print(f"Error with an offer: {e}")
             await browser.close()
