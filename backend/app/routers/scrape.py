@@ -1,7 +1,10 @@
 import httpx
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query, HTTPException
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.scrapers.WelcomeToTheJungleScraper import WelcomeToTheJungleScraper
+from app.scrapers.FranceTravailScraper import FranceTravailScraper
+from app.scrapers.HelloWorkScraper import HelloWorkScraper
 from app import database, models, crud ,schemas
 
 router = APIRouter()
@@ -11,13 +14,29 @@ def test_route():
     return {"message": "Hello, World! testtttttt"}
 
 @router.get("/scrape")
-async def scrape_and_store_jobs(db: Session = Depends(database.get_db)):
-    scraper = WelcomeToTheJungleScraper()
-    #Note scrape_jobs method store in db and return jobs
-    jobs = await scraper.scrape_jobs(db= db)
+async def scrape_and_store_jobs(
+    db: Session = Depends(database.get_db),
+    sites: Optional[List[str]] = Query(None)
+):
+    if not sites or len(sites) == 0:
+        raise HTTPException(status_code=400, detail="You need to specify at least one site to scrape")
+    jobs = []
+    if "welcometothejungle" in sites:
+        scraper = WelcomeToTheJungleScraper()
+        jobs += await scraper.scrape_jobs(db=db)
+        await add_and_evalute_job(db, jobs)
+    if "francetravail" in sites:
+        scraper = FranceTravailScraper()
+        jobs += await scraper.scrape_jobs(db=db)
+        await add_and_evalute_job(db, jobs)
+    if "hellowork" in sites:
+        scraper = WelcomeToTheJungleScraper()
+        jobs += await scraper.scrape_jobs(db=db)
+        await add_and_evalute_job(db, jobs)
+    return jobs
 
+async def add_and_evalute_job(db: Session, jobs: [schemas.Job]):
     user_profile = "Je suis développeur frontend depuis 2 ans, spécialisé en Vue.js. Je maîtrise bien Nuxt.js, JavaScript, TypeScript, TailwindCSS et les API REST. Je recherche un poste en full remote ou avec un maximum de 1 jour sur site. Je préfère travailler dans une startup ou une entreprise innovante, avec une équipe dynamique et des projets stimulants."
-
     async with httpx.AsyncClient(timeout=httpx.Timeout(60.0)) as client:
         for job in jobs:
             response = await client.post(
@@ -35,5 +54,4 @@ async def scrape_and_store_jobs(db: Session = Depends(database.get_db)):
                 print(f"Job: {job.title}, Score: {score}")
             print(f"Job: {job.title}, Score: INVALID SCORE: {score}")
             crud.add_job(db, job)
-    return jobs
 
