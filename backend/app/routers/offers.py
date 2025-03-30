@@ -9,7 +9,7 @@ router = APIRouter()
 @router.get("/offers")
 def get_offers(
         db: Session = Depends(database.get_db),
-        skip: int = Query(0, ge=0),
+        page: int = Query(1, ge=1),
         limit: int = Query(10, ge=1),
         title: Optional[str] = Query(None),
         score_min: Optional[int] = Query(None, ge=0, le=100),
@@ -18,8 +18,10 @@ def get_offers(
         sort_by: Optional[str] = Query(None, regex="^(title|score|location)$"),
         sort_order: Optional[str] = Query("asc", regex="^(asc|desc)$")
 ):
+    skip = (page - 1) * limit
     offers, total_count = crud.get_jobs(db, skip=skip, limit=limit, title=title, score_min=score_min, score_max=score_max, location=location, sort_by=sort_by, sort_order=sort_order)
-    return {"total_count": total_count, "offers": offers}
+    total_pages = (total_count + limit - 1) // limit
+    return {"total_count": total_count, "total_pages": total_pages, "current_page": page, "offers": offers}
 
 @router.get("/offers/{offer_id}")
 def get_offer(offer_id: int, db: Session = Depends(database.get_db)):
