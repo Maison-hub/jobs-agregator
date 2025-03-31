@@ -16,6 +16,19 @@ services:
     networks:
       - job-scraper
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+#    command: bash -c "npm install && npm run dev"
+    volumes:
+      - ./frontend/app:/app
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - job-scraper
+
 #  ollama:
 #    build:
 #      context: ./ollama
