@@ -6,6 +6,7 @@ services:
       MYSQL_PASSWORD: password
       DB_HOST: db
       DB_NAME: job_scrapper
+      FRONTEND_URL: http://frontend:3000
     ports:
       - "8000:8000"
     volumes:
