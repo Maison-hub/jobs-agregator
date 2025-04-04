@@ -12,6 +12,12 @@
     --radius-2xl: 1.5rem;
     --radius-3xl: 2rem;
     --radius-4xl: 2.75rem;
+
+    --ease-in-bounce: cubic-bezier(0.68,-0.55,0.27,1.55);
+
+    --shadow-hover-xl: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
+
+
 }
 
 body {

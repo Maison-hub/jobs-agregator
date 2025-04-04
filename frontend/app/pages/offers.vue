@@ -4,7 +4,7 @@ const { $backend } = useNuxtApp();
 const data = ref(null);
 onMounted(async () => {
   console.log('Start making call')
-  data.value = await useAsyncData('modules', () => $backend('/offers')).data
+  data.value = await useAsyncData('modules', () => $backend('/offers?limit=6')).data
   console.log('DATA : ', data.value.offers);
 });
 
