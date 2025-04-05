@@ -76,7 +76,7 @@ import Skeleton from "primevue/skeleton";
   height: 100%;
   width: 100%;
   border-radius: 50%;
-  filter: blur(30px);
+  filter: blur(50px);
   opacity: 0;
   transition: all .5s ease-in-out;
 }
@@ -95,11 +95,11 @@ import Skeleton from "primevue/skeleton";
 }
 
 .joblistbtn:hover:before{
-  bottom: -60%;
+  bottom: -90%;
 }
 
 .joblistbtn:hover:after{
-  top: -60%;
+  top: -90%;
 }
 
 </style>

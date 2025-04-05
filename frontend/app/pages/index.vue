@@ -31,7 +31,7 @@ onMounted(async ()=>{
   <section class="p-8">
   <div class="flex w-full items-center justify-center gap-5">
     <ButtonJobList />
-    <ButtonJobList />
+    <ButtonScrape />
   </div>
 
 
