@@ -12,6 +12,7 @@ def get_offers(
         page: int = Query(1, ge=1),
         limit: int = Query(10, ge=1),
         title: Optional[str] = Query(None),
+        domain: Optional[list[str]] = Query(None),
         score_min: Optional[int] = Query(None, ge=0, le=100),
         score_max: Optional[int] = Query(None, ge=0, le=100),
         location: Optional[str] = Query(None),
@@ -19,7 +20,7 @@ def get_offers(
         sort_order: Optional[str] = Query("asc", regex="^(asc|desc)$")
 ):
     skip = (page - 1) * limit
-    offers, total_count = crud.get_jobs(db, skip=skip, limit=limit, title=title, score_min=score_min, score_max=score_max, location=location, sort_by=sort_by, sort_order=sort_order)
+    offers, total_count = crud.get_jobs(db, skip=skip, limit=limit, title=title, score_min=score_min, score_max=score_max, location=location, sort_by=sort_by, sort_order=sort_order, domain=domain)
     total_pages = (total_count + limit - 1) // limit
     return {"total_count": total_count, "total_pages": total_pages, "current_page": page, "offers": offers}
 

@@ -4,7 +4,7 @@ from typing import Optional
 
 
 # backend/app/crud.py
-def get_jobs(db: Session, skip: int = 0, limit: int = 10, title: Optional[str] = None, score_min: Optional[int] = None, score_max: Optional[int] = None, location: Optional[str] = None, sort_by: Optional[str] = None, sort_order: Optional[str] = "asc"):
+def get_jobs(db: Session, skip: int = 0, limit: int = 10, title: Optional[str] = None, score_min: Optional[int] = None, score_max: Optional[int] = None, location: Optional[str] = None, sort_by: Optional[str] = None, sort_order: Optional[str] = "asc", domain: Optional[list[str]] = None):
     query = db.query(models.Job)
 
     if title:
@@ -15,6 +15,9 @@ def get_jobs(db: Session, skip: int = 0, limit: int = 10, title: Optional[str] =
         query = query.filter(models.Job.score <= score_max)
     if location:
         query = query.filter(models.Job.location.ilike(f"%{location}%"))
+    if domain:
+        for d in domain:
+            query = query.filter(models.Job.url.like(f"%{d}%"))
 
     total_count = query.count()
 

@@ -2,10 +2,12 @@
 import Paginator from 'primevue/paginator';
 import {useBackend} from "~/composables/useBackend";
 import JobPreviewSkeleton from "~/components/JobPreviewSkeleton.vue";
+import InputText from 'primevue/inputtext';
 
 const offersPerPage = ref(12)
 const total_count = ref(0)
 const page = ref(1)
+const searchValue = ref('')
 
 interface offer{
   id: number;
@@ -47,8 +49,10 @@ onMounted(async ()=>{
 
 <template>
 
-  <section id="filters">
-
+  <section id="filters" class="px-8">
+    <div class="flex flex-row gap-2">
+      <InputText type="text" v-model="searchValue"placeholder="Keywords" />
+    </div>
   </section>
 
 
