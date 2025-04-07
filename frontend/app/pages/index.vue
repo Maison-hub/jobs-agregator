@@ -15,7 +15,6 @@ interface offerResponse{
   offers: offer[]
 }
 
-const { $backend } = useNuxtApp();
 const offers = ref([] as offer[]);
 const loadingOffers = ref(true)
 
@@ -30,11 +29,13 @@ onMounted(async ()=>{
 <template>
   <section class="p-8">
   <div class="flex w-full flex-col md:flex-row items-center justify-center gap-5">
-    <ButtonJobList />
-    <ButtonScrape />
+    <NuxtLink to="/offers" class="w-full">
+      <ButtonJobList />
+    </NuxtLink>
+    <NuxtLink to="/offers" class="w-full">
+      <ButtonScrape />
+    </NuxtLink>
   </div>
-
-
   </section>
 
 

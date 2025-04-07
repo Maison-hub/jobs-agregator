@@ -18,7 +18,7 @@ const props = defineProps({
     </div>
     <div class="px-4">
       <div>
-        <p class="line-clamp-4">
+        <p class="line-clamp-4 text-sm text-white/70">
           {{props.description}}
         </p>
       </div>

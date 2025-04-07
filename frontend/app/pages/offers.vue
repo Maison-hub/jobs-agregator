@@ -1,19 +1,68 @@
 <script setup lang="ts">
+import Paginator from 'primevue/paginator';
+import {useBackend} from "~/composables/useBackend";
+import JobPreviewSkeleton from "~/components/JobPreviewSkeleton.vue";
 
-const { $backend } = useNuxtApp();
-const data = ref(null);
-onMounted(async () => {
-  console.log('Start making call')
-  data.value = await useAsyncData('modules', () => $backend('/offers?limit=6')).data
-  console.log('DATA : ', data.value.offers);
-});
+const offersPerPage = ref(12)
+const total_count = ref(0)
+const page = ref(1)
+
+interface offer{
+  id: number;
+  title: string;
+  description: string;
+  location: string;
+  company: string;
+  link: string;
+}
+
+interface offerResponse{
+  total_count: number
+  offers: offer[]
+}
+
+const offers = ref([] as offer[]);
+const loadingOffers = ref(true)
+
+const fetchOffers = async (newPageValue?: number, newLimit?: number) => {
+  loadingOffers.value = true
+  if (newPageValue) {
+    page.value = newPageValue + 1
+  }
+  if (newLimit) {
+    offersPerPage.value = newLimit
+  }
+  const response = await useBackend(`/offers?page=${page.value}&limit=${offersPerPage.value}`) as offerResponse
+  total_count.value = response.total_count
+  offers.value = response.offers
+  loadingOffers.value = false
+}
+
+onMounted(async ()=>{
+  await fetchOffers()
+  loadingOffers.value = false
+})
 
 </script>
 
 <template>
+
+  <section id="filters">
+
+  </section>
+
+
   <div class="p-8">
-    <div id="result-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" v-if="data">
-      <div v-for="job in data.offers" :key="job.id">
+    <div id="result-list" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      <template v-if="loadingOffers">
+        <JobPreviewSkeleton/>
+        <JobPreviewSkeleton/>
+        <JobPreviewSkeleton/>
+        <JobPreviewSkeleton/>
+        <JobPreviewSkeleton/>
+        <JobPreviewSkeleton/>
+      </template>
+      <div v-else v-for="job in offers" :key="job.id">
         <JobPreview
             :title="job.title"
             :description="job.description"
@@ -23,22 +72,8 @@ onMounted(async () => {
         />
       </div>
     </div>
-    <div v-else>
-      <div class="rounded border border-surface-200 dark:border-surface-700 p-6 bg-surface-0 dark:bg-surface-900">
-        <div class="flex mb-4">
-          <Skeleton shape="circle" size="4rem" class="mr-2"></Skeleton>
-          <div>
-            <Skeleton width="10rem" class="mb-2"></Skeleton>
-            <Skeleton width="5rem" class="mb-2"></Skeleton>
-            <Skeleton height=".5rem"></Skeleton>
-          </div>
-        </div>
-        <Skeleton width="100%" height="150px"></Skeleton>
-        <div class="flex justify-between mt-4">
-          <Skeleton width="4rem" height="2rem"></Skeleton>
-          <Skeleton width="4rem" height="2rem"></Skeleton>
-        </div>
-      </div>
-    </div>
+  </div>
+  <div>
+    <Paginator @update:rows="(n) => fetchOffers(0, n)" @page="(o) => fetchOffers(o.page, o.rows)" :rows="offersPerPage" :totalRecords="total_count" :rowsPerPageOptions="[12, 20, 30, 50]"></Paginator>
   </div>
 </template>
