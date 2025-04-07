@@ -9,7 +9,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="bg-surface-900 border border-surface-700 rounded-xl transition-all duration-300  hover:-translate-y-0.5 shadow-primary-400/20 shadow-none hover:shadow-xl cursor-pointer">
+  <div class="bg-surface-900 border border-surface-700 rounded-xl transition-all duration-300 shadow-primary-400/20 outline-transparent outline-2 hover:outline-primary-400 outline-offset-0 hover:outline-offset-[6px] ease-in-bounce shadow-none hover:shadow-xl cursor-pointer">
     <div class="p-4 flex flex-row items-center justify-between">
       <span class="font-bold font-lg">
         {{props.title}}

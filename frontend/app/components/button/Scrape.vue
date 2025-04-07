@@ -23,14 +23,14 @@ function getLogoStyle(index: number) {
 
 <template>
 
-  <div class="scrapebtn cursor-pointer z-10 bg-surface-900 w-full flex items-center justify-center h-52 rounded-xl relative group/jobbtn overflow-hidden before:bg-primary-400 after:bg-primary-400 outline-2 outline-transparent hover:outline-primary-400 outline-offset-0 hover:outline-offset-[6px] transition-all ease-in-bounce duration-300 shadow-primary-400/30 hover:shadow-hover-xl"
+  <div class="scrapebtn cursor-pointer z-10 bg-surface-900 w-full flex items-center justify-center h-52 rounded-xl relative group/scrapebtn overflow-hidden before:bg-primary-400 after:bg-primary-400 outline-2 outline-transparent hover:outline-primary-400 outline-offset-0 hover:outline-offset-[6px] transition-all ease-in-bounce duration-300 shadow-primary-400/30 hover:shadow-hover-xl"
        @mouseenter="isHovered = true"
        @mouseleave="isHovered = false"
   >
     <div class="logos h-full flex flex-col justify-evenly *:rounded-md p-3">
-      <img src="~/assets/images/icons/sites/franceTravail.svg" alt="">
-      <img src="~/assets/images/icons/sites/helloWork.svg" alt="">
-      <img src="~/assets/images/icons/sites/linkedIn.svg" alt="">
+      <img src="~/assets/images/icons/sites/franceTravail.svg" alt="" class="-translate-y-4 -translate-x-5 -rotate-12 grayscale">
+      <img src="~/assets/images/icons/sites/helloWork.svg" alt="" class="-translate-x-4 grayscale">
+      <img src="~/assets/images/icons/sites/linkedIn.svg" alt="" class="translate-y-4 -translate-x-5 rotate-12 grayscale">
     </div>
     <!-- Câbles Gauche -->
     <svg width="206" class="stroke-surface-800" height="125" viewBox="0 0 206 125" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,9 +84,9 @@ function getLogoStyle(index: number) {
     </svg>
 
     <div class="logos h-full flex flex-col justify-evenly *:rounded-md p-3">
-      <img src="~/assets/images/icons/sites/welcomeToTheJungle.svg" alt="">
-      <img src="~/assets/images/icons/sites/indeed.svg" alt="">
-      <img src="~/assets/images/icons/sites/franceTravail.svg" alt="">
+      <img src="~/assets/images/icons/sites/welcomeToTheJungle.svg" alt="" class="-translate-y-4 translate-x-5 -rotate-12 grayscale">
+      <img src="~/assets/images/icons/sites/indeed.svg" alt="" class="translate-x-5 grayscale">
+      <img src="~/assets/images/icons/sites/franceTravail.svg" alt="" class="translate-y-4 translate-x-5 rotate-12 grayscale">
     </div>
   </div>
 
@@ -129,13 +129,52 @@ function getLogoStyle(index: number) {
   filter: blur(20px);
 }
 
+.scrapebtn:hover .logos img{
+  filter: grayscale(0);
+  translate: none;
+  rotate: none;
+}
+
 .logos img{
   width: 35px;
   height: 35px;
   aspect-ratio: 1/1;
   min-width: 35px;
   min-height: 35px;
+  transition: all .4s var(--ease-in-bounce);
+}
+
+.scrapebtn:before, .scrapebtn:after{
+  content: "";
+  z-index: -1;
+  position: absolute;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0;
   transition: all .5s ease-in-out;
 }
 
+.scrapebtn:hover:before, .scrapebtn:hover:after{
+  opacity: 0.2;
+  border-radius: 100%;
+}
+
+.scrapebtn:before{
+  bottom: -100%;
+}
+
+.scrapebtn:after{
+  top: -100%;
+}
+
+.scrapebtn:hover:before{
+  bottom: -90%;
+}
+
+.scrapebtn:hover:after{
+  top: -90%;
+}
 </style>
