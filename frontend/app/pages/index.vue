@@ -28,11 +28,11 @@ onMounted(async ()=>{
 
 <template>
   <section class="p-8">
-  <div class="flex w-full flex-col md:flex-row items-center justify-center gap-5">
-    <NuxtLink to="/offers" class="w-full">
+  <div class="flex w-full flex-col md:flex-row items-center justify-center gap-5 relative">
+    <NuxtLink to="/offers" class="w-full md:w-1/2 relative">
       <ButtonJobList />
     </NuxtLink>
-    <NuxtLink to="/offers" class="w-full">
+    <NuxtLink to="/offers" class="w-full md:w-1/2">
       <ButtonScrape />
     </NuxtLink>
   </div>

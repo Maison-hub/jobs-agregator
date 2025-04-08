@@ -22,7 +22,7 @@ function getLogoStyle(index: number) {
 
 
 <template>
-  <div class="scrapebtn cursor-pointer z-10 bg-surface-900 w-full flex items-center justify-center h-52 rounded-xl relative group/scrapebtn overflow-hidden before:bg-primary-400 after:bg-primary-400 outline-2 outline-transparent hover:outline-primary-400 outline-offset-0 hover:outline-offset-[6px] transition-all ease-in-bounce duration-300 shadow-primary-400/30 hover:shadow-hover-xl"
+  <div class="scrapebtn cursor-pointer z-10 bg-surface-900 flex items-center justify-center h-52 rounded-xl relative group/scrapebtn overflow-hidden before:bg-primary-400 after:bg-primary-400 outline-2 outline-transparent hover:outline-primary-400 outline-offset-0 hover:outline-offset-[6px] transition-all ease-in-bounce duration-300 shadow-primary-400/30 hover:shadow-hover-xl"
        @mouseenter="isHovered = true"
        @mouseleave="isHovered = false"
   >
