@@ -32,7 +32,7 @@ onMounted(async ()=>{
     <NuxtLink to="/offers" class="w-full md:w-1/2 relative">
       <ButtonJobList />
     </NuxtLink>
-    <NuxtLink to="/offers" class="w-full md:w-1/2">
+    <NuxtLink to="/scrape" class="w-full md:w-1/2">
       <ButtonScrape />
     </NuxtLink>
   </div>

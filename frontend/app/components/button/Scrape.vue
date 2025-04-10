@@ -33,9 +33,9 @@ function getLogoStyle(index: number) {
     </div>
     <!-- Câbles Gauche -->
     <svg width="206" class="stroke-surface-800" height="125" viewBox="0 0 206 125" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path id="lbm" d="M203 62.3652H3" stroke="current-color" stroke-width="6" stroke-linecap="round"/>
-      <path id="lbt" d="M193.476 62.3652H112.048C95.6544 62.3652 82.3651 75.6546 82.3651 92.0478V92.0478C82.3651 108.441 69.0757 121.73 52.6825 121.73H3" stroke="current-color" stroke-width="6" stroke-linecap="round"/>
-      <path id="lbb" d="M193.476 62.3651H112.048C95.6544 62.3651 82.3651 49.0758 82.3651 32.6825V32.6825C82.3651 16.2893 69.0757 3 52.6825 3H3" stroke="current-color" stroke-width="6" stroke-linecap="round"/>
+      <path id="lbm" d="M204 62.3652H3" stroke="current-color"  stroke-width="6" stroke-linecap="round"/>
+      <path id="lbt" d="M194.476 62.3652H167.561C158.16 62.3652 149.065 65.7028 141.895 71.7833L115.183 94.4367C94.4051 112.058 68.0458 121.73 40.8017 121.73H3" stroke="current-color"  stroke-width="6" stroke-linecap="round"/>
+      <path id="lbb" d="M194.476 62.3651H167.561C158.16 62.3651 149.065 59.0275 141.895 52.947L115.183 30.2936C94.4051 12.6723 68.0458 3 40.8017 3H3" stroke="current-color"  stroke-width="6" stroke-linecap="round"/>
 
       <rect
           :class="`circle ${isHovered ? 'hover' : ''}`"
@@ -58,10 +58,11 @@ function getLogoStyle(index: number) {
 
     <div class="btn-text text-2xl z-10 before:bg-surface-900/10  py-2 px-4 relative text-nowrap">Scrap jobs</div>
 
+    <!-- Câbles Droite -->
     <svg class="stroke-surface-800"  width="206" height="125" viewBox="0 0 206 125" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path id="rbm" d="M3.00001 62.3652H203" stroke="current-color" stroke-width="6" stroke-linecap="round"/>
-      <path id="rbt" d="M12.5238 62.3652H93.9524C110.346 62.3652 123.635 75.6546 123.635 92.0478V92.0478C123.635 108.441 136.924 121.73 153.317 121.73H203" stroke="current-color" stroke-width="6" stroke-linecap="round"/>
-      <path id="rbb" d="M12.5238 62.3651H93.9524C110.346 62.3651 123.635 49.0758 123.635 32.6825V32.6825C123.635 16.2893 136.924 3 153.317 3H203" stroke="current-color" stroke-width="6" stroke-linecap="round"/>
+      <path id="rbm" d="M3 62.3652H204" stroke="current-color" stroke-width="6" stroke-linecap="round"/>
+      <path id="rbb" d="M12.5238 62.3652H39.4388C48.8398 62.3652 57.9355 65.7028 65.1053 71.7833L91.8169 94.4367C112.595 112.058 138.954 121.73 166.198 121.73H204" stroke="current-color" stroke-width="6" stroke-linecap="round"/>
+      <path id="rbt" d="M12.5238 62.3651H39.4388C48.8398 62.3651 57.9355 59.0275 65.1053 52.947L91.8169 30.2936C112.595 12.6723 138.954 3 166.198 3H204" stroke="current-color" stroke-width="6" stroke-linecap="round"/>
 
       <rect
           :class="`circle ${isHovered ? 'hover' : ''}`"

@@ -5,6 +5,8 @@ import JobPreviewSkeleton from "~/components/JobPreviewSkeleton.vue";
 import InputText from 'primevue/inputtext';
 import MultiSelect from 'primevue/multiselect';
 import Button from 'primevue/button';
+import Select from 'primevue/select';
+
 
 interface offer{
   id: number;
@@ -12,7 +14,7 @@ interface offer{
   description: string;
   location: string;
   company: string;
-  link: string;
+  url: string;
 }
 
 interface offerResponse{
@@ -20,23 +22,23 @@ interface offerResponse{
   offers: offer[]
 }
 
+const { $sites } = useNuxtApp();
+
+
 const offersPerPage = ref(12)
 const total_count = ref(0)
 const page = ref(1)
 const searchValue = ref('')
 
+const orderBy = ref<{name: string, value: string}>({name: 'Title', value: 'title'})
+
 const offers = ref([] as offer[]);
 const loadingOffers = ref()
 
-const selectedSites = ref([]);
-const sites = ref([
-  { name: 'Welcome To The jungle', domain: 'welcometothejungle.com', logo:'welcomeToTheJungle.svg' },
-  { name: 'LinkedIn', domain: "linkedin.com", logo: 'linkedIn.svg' },
-  { name: 'Hello Work', domain: "hellowork.com", logo: 'helloWork.svg' },
-  { name: 'France Travail', domain: "france-travail.fr", logo: 'franceTravail.svg' },
-]);
+const selectedSites = ref<sites[]>([]);
 
 const onSearch = async ()=>{
+  console.log(orderBy.value)
   await fetchOffers();
 }
 
@@ -50,9 +52,12 @@ const fetchOffers = async (newPageValue?: number, newLimit?: number) => {
   }
   let sitesQuery = ''
   selectedSites.value.forEach((sites)=>{
-    console.log(sites)
     sitesQuery += `&domain=${sites.domain}`
   })
+  if(orderBy.value){
+    sitesQuery += `&order_by=${orderBy.value}`
+  }
+
   const response = await useBackend(`/offers?page=${page.value}&limit=${offersPerPage.value}${sitesQuery}`) as offerResponse
   total_count.value = response.total_count
   offers.value = response.offers
@@ -71,12 +76,12 @@ onMounted(async ()=>{
   <section id="filters" class="px-8 py-8 flex flex-col items-center justify-center gap-5 ">
     <div class="flex flex-row gap-5 items-start justify-start w-full">
       <div class="flex flex-row gap-2">
-        <InputText type="text" v-model="searchValue" placeholder="Keywords" />
+        <InputText type="text" v-model="searchValue" placeholder="Search" />
       </div>
 
       <!--Sites select-->
       <div class="card flex justify-center">
-        <MultiSelect v-model="selectedSites" :options="sites" optionLabel="name" placeholder="Select Sites" display="chip" class="w-full md:w-80">
+        <MultiSelect v-model="selectedSites" :options="$sites" optionLabel="name" placeholder="Select Sites" display="chip" class="w-full md:w-80">
           <template #option="slotProps">
             <div class="flex items-center">
               <img :alt="slotProps.option.name" :src="`/images/icons/sites/${slotProps.option.logo}`" :class="`mr-2 rounded-xs aspect-square`" style="width: 18px" />
@@ -98,16 +103,32 @@ onMounted(async ()=>{
           </template>
         </MultiSelect>
       </div>
+        <div class="flex flex-row gap-2">
+          <Button label="Search" icon="pi pi-search" class="w-full md:w-40" @click="onSearch" />
+        </div>
     </div>
     <div>
-      <div class="flex flex-row gap-2">
-        <Button label="Search" icon="pi pi-search" class="w-full md:w-40" @click="onSearch" />
-      </div>
+
     </div>
   </section>
 
 
-  <div class="p-8">
+  <div class="p-8 mb-12">
+    <div v-if="!loadingOffers">
+      <div class="flex flex-row items-center justify-start gap-4 py-5">
+        <p class="text-surface-600 text-nowrap">Found {{total_count}} results</p>
+        <div class="h-[1px] bg-surface-600 w-full"></div>
+        <Select v-model="orderBy" :options="[
+          {name: 'Title', value: 'title'},
+          {name: 'Score', value: 'score'},
+          {name: 'Location', value: 'location'}]"
+                optionLabel="name" optionValue="value" placeholder="Order by" class="w-full md:w-56"   @change="onSearch">
+          <template #dropdownicon>
+            <i class="pi pi-sort-alt" />
+          </template>
+        </Select>
+      </div>
+    </div>
     <div id="result-list" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       <template v-if="loadingOffers">
         <JobPreviewSkeleton/>
@@ -123,12 +144,12 @@ onMounted(async ()=>{
             :description="job.description"
             :location="job.location"
             :company="job.company"
-            :link="job.link"
+            :link="job.url"
         />
       </div>
     </div>
   </div>
-  <div>
-    <Paginator @update:rows="(n) => fetchOffers(0, n)" @page="(o) => fetchOffers(o.page, o.rows)" :rows="offersPerPage" :totalRecords="total_count" :rowsPerPageOptions="[12, 20, 30, 50]"></Paginator>
+  <div class="fixed bottom-0 w-full">
+    <Paginator @update:rows="(n) => {page = 1 ;fetchOffers(0, n)}" @page="(o) => {fetchOffers(o.page, o.rows); console.log(o);}" :rows="offersPerPage" :totalRecords="total_count" :rowsPerPageOptions="[12, 20, 30, 50]"></Paginator>
   </div>
 </template>

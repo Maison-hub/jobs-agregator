@@ -1,4 +1,7 @@
 <script setup lang="ts">
+
+const { $sites } = useNuxtApp();
+
 const props = defineProps({
   title: String,
   description: String,
@@ -6,6 +9,10 @@ const props = defineProps({
   company: String,
   link: String,
 })
+
+const site = computed(() => {
+  return $sites.find((s) => props.link?.includes(s.domain));
+});
 </script>
 
 <template>
@@ -30,8 +37,14 @@ const props = defineProps({
             Nancy, Grand Est
           </span>
         <span class="flex flex-row items-center gap-2">
-            <img src="~/assets/images/icons/sites/welcomeToTheJungle.svg" alt="welcome to the jungle" class="w-8 h-8 rounded-sm" v-tooltip.left="'From Welcome to the jungle'" />
-            <a :href="link" target="_blank">
+          <img
+              v-if="site"
+              :src="`/images/icons/sites/${site.logo}`"
+              :alt="site.name"
+              class="w-8 h-8 rounded-sm"
+              v-tooltip.left="`From ${site.name}`"
+          />
+          <a :href="link" target="_blank">
               <Button icon="pi pi-external-link" severity="secondary" aria-label="Filter" size="small" />
             </a>
         </span>
