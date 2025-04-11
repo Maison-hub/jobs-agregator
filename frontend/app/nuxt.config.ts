@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   runtimeConfig: {
     public:{
-      backend_url: "http://localhost:8000"
+      backend_url: "http://localhost:8000",
     }
   },
   compatibilityDate: '2024-11-01',

@@ -5,12 +5,12 @@ import ToggleSwitch from 'primevue/toggleswitch';
 const selectedSites = ref<sites[]>([]);
 const { $sites } = useNuxtApp();
 
+
 const useAi = ref(false);
 
 </script>
 
 <template>
-
   <section class="p-8">
     <div class="flex flex-row items-center gap-4 flex-wrap">
 
@@ -42,6 +42,21 @@ const useAi = ref(false);
         <label for="useAi" class="text-surface-600 text-sm">Use AI</label>
       </div>
     </div>
+  </section>
+
+  <section >
+
+    <div class="w-full flex justify-center">
+      <Button v-slot="slotProps" asChild>
+        <button
+            v-bind="slotProps.a11yAttrs"
+            class="rounded-lg text-black border-none text-xl px-7 py-4 outline-2 outline-transparent hover:outline-primary-400 outline-offset-0 hover:outline-offset-[6px] duration-300 bg-primary-500 cursor-pointer ring-offset-surface-0 dark:ring-offset-surface-900 ring-primary transition-all ease-in-bounce"
+        >
+          Lunch Scrape 🚀
+        </button>
+      </Button>
+    </div>
+
   </section>
 
 </template>

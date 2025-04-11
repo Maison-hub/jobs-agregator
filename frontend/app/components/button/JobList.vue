@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 
-import Skeleton from "primevue/skeleton";
 </script>
 
 
