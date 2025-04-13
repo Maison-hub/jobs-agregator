@@ -44,8 +44,8 @@ async def test():
     jobs = await scraper.scrape_jobs()
     return jobs
 
-@app.get("/scrape")
-async def scrape_and_store_jobs(db: Session = Depends(database.get_db)):
-    scraper = WelcomeToTheJungleScraper()
-    jobs = await scraper.scrape_jobs(db= db)
-    return jobs
+# @app.get("/scrape")
+# async def scrape_and_store_jobs(db: Session = Depends(database.get_db)):
+#     scraper = WelcomeToTheJungleScraper()
+#     jobs = await scraper.scrape_jobs(db= db)
+#     return jobs

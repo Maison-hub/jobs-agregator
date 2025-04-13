@@ -1,5 +1,6 @@
 import httpx
 from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi.responses import StreamingResponse
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.scrapers.WelcomeToTheJungleScraper import WelcomeToTheJungleScraper
@@ -12,6 +13,14 @@ router = APIRouter()
 @router.get("/test-route")
 def test_route():
     return {"message": "Hello, World! testtttttt"}
+
+async def fake_video_streamer():
+    for i in range(10):
+        yield f"{i}/10"
+
+@router.get("/test-stream")
+async def main():
+    return StreamingResponse(fake_video_streamer())
 
 @router.get("/scrape")
 async def scrape_and_store_jobs(
