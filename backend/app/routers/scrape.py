@@ -1,7 +1,7 @@
 import httpx
 from fastapi import APIRouter, Depends, Query, HTTPException
 from fastapi.responses import StreamingResponse
-from typing import List, Optional
+from typing import List, Optional, AsyncGenerator
 from sqlalchemy.orm import Session
 from app.scrapers.WelcomeToTheJungleScraper import WelcomeToTheJungleScraper
 from app.scrapers.FranceTravailScraper import FranceTravailScraper
@@ -26,23 +26,35 @@ async def main():
 async def scrape_and_store_jobs(
     db: Session = Depends(database.get_db),
     sites: Optional[List[str]] = Query(None)
-):
+) -> StreamingResponse:
     if not sites or len(sites) == 0:
         raise HTTPException(status_code=400, detail="You need to specify at least one site to scrape")
-    jobs = []
-    if "welcometothejungle" in sites:
-        scraper = WelcomeToTheJungleScraper()
-        jobs += await scraper.scrape_jobs(db=db)
-        await add_and_evalute_job(db, jobs)
-    if "francetravail" in sites:
-        scraper = FranceTravailScraper()
-        jobs += await scraper.scrape_jobs(db=db)
-        await add_and_evalute_job(db, jobs)
-    if "hellowork" in sites:
-        scraper = WelcomeToTheJungleScraper()
-        jobs += await scraper.scrape_jobs(db=db)
-        await add_and_evalute_job(db, jobs)
-    return jobs
+    async def scrape_generator() -> AsyncGenerator[str, None]:
+        if "welcometothejungle" in sites:
+            yield "Starting WelcomeToTheJungle scraper...\n"
+            scraper = WelcomeToTheJungleScraper()
+            async for message in scraper.scrape_jobs(db=db):
+                yield message
+            yield f"Scraped jobs from WelcomeToTheJungle.\n"
+        if "francetravail" in sites:
+            yield "Starting FranceTravail scraper...\n"
+            scraper = FranceTravailScraper()
+            async for message in scraper.scrape_jobs(db=db):
+                yield message
+            yield f"Finish scraped jobs from FranceTravail.\n"
+        if "hellowork" in sites:
+            yield "Starting HelloWork scraper...\n"
+            scraper = HelloWorkScraper()
+            async for message in scraper.scrape_jobs(db=db):
+                yield message
+            yield f"Finish scraped jobs from HelloWork.\n"
+        yield "Scraping completed.\n"
+
+    return StreamingResponse(
+        scrape_generator(),
+        media_type="text/plain",
+        headers={"X-Accel-Buffering": "no"}  # Désactive le buffering côté serveur
+    )
 
 async def add_and_evalute_job(db: Session, jobs: [schemas.Job]):
     user_profile = "Je suis développeur frontend depuis 2 ans, spécialisé en Vue.js. Je maîtrise bien Nuxt.js, JavaScript, TypeScript, TailwindCSS et les API REST. Je recherche un poste en full remote ou avec un maximum de 1 jour sur site. Je préfère travailler dans une startup ou une entreprise innovante, avec une équipe dynamique et des projets stimulants."
