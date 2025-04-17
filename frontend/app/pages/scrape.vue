@@ -96,7 +96,7 @@ const startScraping = async () => {
           <Vue3Lottie
               animationLink="animations/scrape_loader.json"
               loop
-              :height="300"
+              :height="200"
               :width="300"
           />
         </client-only>
