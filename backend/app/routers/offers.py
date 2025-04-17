@@ -26,4 +26,4 @@ def get_offers(
 
 @router.get("/offers/{offer_id}")
 def get_offer(offer_id: int, db: Session = Depends(database.get_db)):
-    return crud.get_offer(db, offer_id)
+    return crud.get_job(db, offer_id)

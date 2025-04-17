@@ -1,4 +1,5 @@
-from typing import TypedDict, Optional, AsyncGenerator
+import httpx
+from typing import TypedDict, Optional, AsyncGenerator, Union
 from abc import ABC, abstractmethod
 from sqlalchemy.orm import Session
 from playwright.async_api import async_playwright
@@ -21,7 +22,7 @@ class AbstractScraper(ABC):
     def get_options(self) -> ScraperOptions:
         pass
 
-    async def scrape_jobs(self, db: Session, save=True)-> AsyncGenerator:
+    async def scrape_jobs(self, db: Session, save=True, ai=False)-> AsyncGenerator:
         options = self.get_options()
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)
@@ -66,10 +67,15 @@ class AbstractScraper(ABC):
                         description=description.strip()  if description else None,
                         location=location.strip() if location else None,
                     )
+                    if ai:
+                        # Call the AI model to evaluate the job
+                        score = await self.get_note(job_data)
+                        if score:
+                            job_data.score = score
                     existing_jobs = db.query(models.Job).filter_by(url=job_data.url).first()
-#                     if save:
-#                         if not existing_jobs:
-#                             crud.add_job(db, job_data)
+                    if save:
+                        if not existing_jobs:
+                            crud.add_job(db, job_data)
                     count += 1
                     print(f"{count}/{len(offers)}")
                     yield f"{count}/{len(offers)}\n"
@@ -78,3 +84,36 @@ class AbstractScraper(ABC):
                     yield f"Error with an offer: {e}\n"
             await browser.close()
         yield f"Scraping completed.\n"
+
+
+    async def get_note(self, job: schemas.Job) -> Union[int, bool]:
+        user_profile = "Je suis développeur frontend depuis 2 ans, spécialisé en Vue.js. Je maîtrise bien Nuxt.js, JavaScript, TypeScript, TailwindCSS et les API REST. Je recherche un poste en full remote ou avec un maximum de 1 jour sur site. Je préfère travailler dans une startup ou une entreprise innovante, avec une équipe dynamique et des projets stimulants."
+        async with httpx.AsyncClient(timeout=httpx.Timeout(60.0)) as client:
+            try:
+                response = await client.post(
+                    "http://ai:5001/evaluate-offer",
+                    json={
+                        "job_description": job.description,
+                        "user_description": user_profile
+                    }
+                )
+                # Vérifiez le code de statut HTTP
+                if response.status_code != 200:
+                    print(f"Erreur API: {response.status_code}, contenu: {response.text}")
+                    return False
+
+                # Vérifiez si la réponse est un JSON valide
+                try:
+                    score = response.json()
+                except ValueError:
+                    print(f"Réponse non valide: {response.text}")
+                    return False
+
+                # Vérifiez si le score est un entier entre 0 et 100
+                if isinstance(score, int) and 0 <= score <= 100:
+                    return score
+                print(f"Score invalide: {score}")
+                return False
+            except Exception as e:
+                print(f"Erreur lors de la requête API: {e}")
+                return False

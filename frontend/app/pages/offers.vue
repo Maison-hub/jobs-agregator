@@ -9,7 +9,7 @@ import Select from 'primevue/select';
 
 
 interface offer{
-  id: number;
+  id: string;
   title: string;
   description: string;
   location: string;
@@ -64,6 +64,25 @@ const fetchOffers = async (newPageValue?: number, newLimit?: number) => {
   loadingOffers.value = false
 }
 
+const drawerVisible = ref(false); // État pour gérer l'ouverture du Drawer
+const selectedOffer = ref<Offer | null>(null); // Stocke les détails de l'offre sélectionnée
+
+// Fonction pour ouvrir le Drawer et fetch les détails de l'offre
+const openOfferDetails = async (offerId: string) => {
+  drawerVisible.value = true; // Ouvre le Drawer
+  selectedOffer.value = null; // Réinitialise les données précédentes
+  try {
+    const offer = await useBackend(`/offers/${offerId}`) as Offer;
+    selectedOffer.value = offer; // Remplit les détails de l'offre
+  } catch (error) {
+    console.error('Erreur lors du fetch des détails de l\'offre :', error);
+  }
+};
+
+const selectedOfferSite = computed(() => {
+  return $sites.find((s) => selectedOffer.value.url?.includes(s.domain));
+});
+
 onMounted(async ()=>{
   await fetchOffers()
   loadingOffers.value = false
@@ -72,7 +91,6 @@ onMounted(async ()=>{
 </script>
 
 <template>
-
   <section id="filters" class="px-8 py-8 flex flex-col items-center justify-center gap-5 ">
     <div class="flex flex-row gap-5 items-start justify-start w-full">
       <div class="flex flex-row gap-2">
@@ -140,11 +158,13 @@ onMounted(async ()=>{
       </template>
       <div v-else v-for="job in offers" :key="job.id">
         <JobPreview
+            :id="job.id"
             :title="job.title"
             :description="job.description"
             :location="job.location"
             :company="job.company"
             :link="job.url"
+            @click="openOfferDetails(job.id)"
         />
       </div>
     </div>
@@ -152,4 +172,40 @@ onMounted(async ()=>{
   <div class="fixed bottom-0 w-full">
     <Paginator @update:rows="(n) => {page = 1 ;fetchOffers(0, n)}" @page="(o) => {fetchOffers(o.page, o.rows); console.log(o);}" :rows="offersPerPage" :totalRecords="total_count" :rowsPerPageOptions="[12, 20, 30, 50]"></Paginator>
   </div>
+
+  <Drawer v-model:visible="drawerVisible" :dismissable="true" class="!w-screen md:!w-[75vw]">
+    <template #header>
+      <div v-if="selectedOffer" class="text-2xl font-bold">
+          {{selectedOffer.title}}
+      </div>
+    </template>
+    <template v-if="selectedOffer">
+      <div class="w-full flex flex-row items-center justify-start gap-2">
+        <img
+            v-if="selectedOfferSite"
+            :src="`/images/icons/sites/${selectedOfferSite.logo}`"
+            :alt="selectedOfferSite.name"
+            class="w-12 h-12 rounded-sm"
+            v-tooltip.left="`From ${selectedOfferSite.name}`"
+        />
+        <a :href="selectedOffer.url" target="_blank">
+          <Button icon="pi pi-external-link" severity="secondary" aria-label="Filter" size="large" />
+        </a>
+      </div>
+      <p class="text-sm text-gray-200 py-4">{{ selectedOffer.description }}</p>
+      <div class="flex flex-col gap-3">
+        <span class="text-white/50 text-sm">
+          <i class="pi pi-map-marker"></i>
+          {{ selectedOffer.location }}
+        </span>
+        <span class="text-white/50 text-sm">
+          <i class="pi pi-building"></i>
+          {{ selectedOffer.company }}
+        </span>
+      </div>
+    </template>
+    <template v-else>
+      <p>Chargement des détails...</p>
+    </template>
+  </Drawer>
 </template>

@@ -6,20 +6,46 @@ import { Vue3Lottie } from 'vue3-lottie'
 
 const selectedSites = ref<sites[]>([]);
 const { $sites } = useNuxtApp();
+const alreadyScrape = ref(false);
 
 const config = useRuntimeConfig()
 const backApi = config.public.backend_url
 
 const useAi = ref(false);
 
+
 const isScraping = ref(false);
 const scrapingDone = ref(false);
+const scrapeError = ref(false);
 const currentMessage = ref('');
 
 
 const startScraping = async () => {
+  alreadyScrape.value = true;
+  if (!selectedSites.value || selectedSites.value.length === 0) {
+    console.log("Please select at least one site");
+    return;
+  }
+  scrapingDone.value = false;
   isScraping.value = true;
-  const response = await fetch(`${ backApi }/scrape?sites=hellowork`) as Response;
+  let scrapeUrl = new URL('/scrape', backApi);
+  selectedSites.value.forEach((site) => {
+    //get domain without tld
+    const domainName = site.domain.split('.')[0];
+    console.log('domainName', domainName);
+    scrapeUrl.searchParams.append('sites', domainName);
+  });
+  if (useAi.value) {
+    scrapeUrl.searchParams.append('ai', 'true');
+  }
+  const response = await fetch(scrapeUrl) as Response;
+  if (!response.ok) {
+    console.error('Error while scraping');
+    isScraping.value = false;
+    scrapingDone.value = false;
+    scrapeError.value = true;
+    return;
+  }
   if (!response.body) {
     console.error('ReadableStream not yet supported in this browser.');
     return;
@@ -49,8 +75,8 @@ const startScraping = async () => {
   <section class="p-8">
     <div class="flex flex-row items-center gap-4 flex-wrap">
 
-      <div class="card flex justify-center">
-        <MultiSelect v-model="selectedSites" :options="$sites" optionLabel="name" placeholder="Select Sites" display="chip" class="w-full md:w-80">
+      <div class="card flex justify-center flex-col gap-2 relative">
+        <MultiSelect v-model="selectedSites" :invalid="selectedSites.length <= 0 && alreadyScrape"  :options="$sites" optionLabel="name" placeholder="Select Sites" display="chip" class="w-full md:w-80">
           <template #option="slotProps">
             <div class="flex items-center">
               <img :alt="slotProps.option.name" :src="`/images/icons/sites/${slotProps.option.logo}`" :class="`mr-2 rounded-xs aspect-square`" style="width: 18px" />
@@ -71,13 +97,16 @@ const startScraping = async () => {
             </div>
           </template>
         </MultiSelect>
+        <div v-if="selectedSites.length <= 0 && alreadyScrape" class="text-red-400 text-sm absolute -bottom-2 left-0 translate-y-full">Please select at least one site 🙏</div>
       </div>
       <div class="flex flex-row items-center gap-2">
         <ToggleSwitch v-model="useAi" inputId="useAi" />
         <label for="useAi" class="text-surface-600 text-sm">Use AI</label>
+        <i class="pi pi-question-circle text-surface-800" v-tooltip.right="'This can significantly increase the scraping time'"></i>
       </div>
     </div>
   </section>
+
 
   <section >
 
@@ -119,6 +148,9 @@ const startScraping = async () => {
         <NuxtLink to="/offers">
           <Button icon="pi pi-briefcase" variant="outlined" label="View in list of jobs" severity="secondary"/>
         </NuxtLink>
+      </div>
+      <div v-if="scrapeError" class="flex flex-col items-center justify-center gap-2">
+        <span class="text-red-500 font-bold">Error while scraping offers</span>
       </div>
     </div>
 

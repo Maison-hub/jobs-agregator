@@ -1,9 +1,3 @@
-<script setup lang="ts">
-
-
-</script>
-
-
 <template>
     <div class="joblistbtn cursor-pointer z-10 bg-surface-900 w-full flex items-center justify-center h-52 rounded-xl relative group/jobbtn overflow-hidden before:bg-primary-400 after:bg-primary-400 outline-2 outline-transparent hover:outline-primary-400 outline-offset-0 hover:outline-offset-[6px] transition-all ease-in-bounce duration-300 shadow-primary-400/30 hover:shadow-hover-xl">
         <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 left-0 flex flex-col gap-2 ">

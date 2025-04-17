@@ -3,6 +3,7 @@
 const { $sites } = useNuxtApp();
 
 const props = defineProps({
+  id: String,
   title: String,
   description: String,
   location: String,
@@ -45,11 +46,10 @@ const site = computed(() => {
               v-tooltip.left="`From ${site.name}`"
           />
           <a :href="link" target="_blank">
-              <Button icon="pi pi-external-link" severity="secondary" aria-label="Filter" size="small" />
-            </a>
+            <Button icon="pi pi-external-link" severity="secondary" aria-label="Filter" size="small" />
+          </a>
         </span>
       </div>
     </div>
-
   </div>
 </template>
