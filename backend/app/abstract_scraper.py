@@ -1,4 +1,4 @@
-from typing import TypedDict, Optional
+from typing import TypedDict, Optional, AsyncGenerator
 from abc import ABC, abstractmethod
 from sqlalchemy.orm import Session
 from playwright.async_api import async_playwright
@@ -21,15 +21,15 @@ class AbstractScraper(ABC):
     def get_options(self) -> ScraperOptions:
         pass
 
-    async def scrape_jobs(self, db: Session)-> list[schemas.JobCreate]:
+    async def scrape_jobs(self, db: Session, save=True)-> AsyncGenerator:
         options = self.get_options()
-        jobs = []
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)
             page = await browser.new_page()
 
             await page.goto(options['url'])
-            print(f"Scraping {options['url']}")
+            print(f"Scraping {options['base_url']}")
+            yield f"Scraping {options['base_url']}\n"
             await page.wait_for_selector(options['results_selector'])
 
             offers_locator = page.locator(options['results_selector'])
@@ -66,13 +66,15 @@ class AbstractScraper(ABC):
                         description=description.strip()  if description else None,
                         location=location.strip() if location else None,
                     )
-                    # existing_jobs = db.query(models.Job).filter_by(url=job_data.url).first()
-                    # if not existing_jobs:
-                    #     crud.add_job(db, job_data)
-                    jobs.append(job_data)
+                    existing_jobs = db.query(models.Job).filter_by(url=job_data.url).first()
+#                     if save:
+#                         if not existing_jobs:
+#                             crud.add_job(db, job_data)
                     count += 1
-                    print(f"Scraped {count}/{len(offers)} offers")
+                    print(f"{count}/{len(offers)}")
+                    yield f"{count}/{len(offers)}\n"
                 except Exception as e:
                     print(f"Error with an offer: {e}")
+                    yield f"Error with an offer: {e}\n"
             await browser.close()
-        return jobs
+        yield f"Scraping completed.\n"
