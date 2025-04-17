@@ -28,8 +28,8 @@ class AbstractScraper(ABC):
             page = await browser.new_page()
 
             await page.goto(options['url'])
-            print(f"Scraping {options['url']}")
-            yield f"Scraping {options['url']}\n"
+            print(f"Scraping {options['base_url']}")
+            yield f"Scraping {options['base_url']}\n"
             await page.wait_for_selector(options['results_selector'])
 
             offers_locator = page.locator(options['results_selector'])
@@ -67,12 +67,12 @@ class AbstractScraper(ABC):
                         location=location.strip() if location else None,
                     )
                     existing_jobs = db.query(models.Job).filter_by(url=job_data.url).first()
-                    if save:
-                        if not existing_jobs:
-                            crud.add_job(db, job_data)
+#                     if save:
+#                         if not existing_jobs:
+#                             crud.add_job(db, job_data)
                     count += 1
-                    print(f"Scraped {count}/{len(offers)} offers")
-                    yield f"Scraped {count}/{len(offers)} offers\n"
+                    print(f"{count}/{len(offers)}")
+                    yield f"{count}/{len(offers)}\n"
                 except Exception as e:
                     print(f"Error with an offer: {e}")
                     yield f"Error with an offer: {e}\n"
