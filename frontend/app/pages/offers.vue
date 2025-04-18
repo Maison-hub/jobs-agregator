@@ -14,6 +14,7 @@ interface offer{
   description: string;
   location: string;
   company: string;
+  score: number;
   url: string;
 }
 
@@ -64,23 +65,21 @@ const fetchOffers = async (newPageValue?: number, newLimit?: number) => {
   loadingOffers.value = false
 }
 
-const drawerVisible = ref(false); // État pour gérer l'ouverture du Drawer
-const selectedOffer = ref<Offer | null>(null); // Stocke les détails de l'offre sélectionnée
+const drawerVisible = ref(false);
+const selectedOffer = ref<offer | null>(null);
 
-// Fonction pour ouvrir le Drawer et fetch les détails de l'offre
 const openOfferDetails = async (offerId: string) => {
-  drawerVisible.value = true; // Ouvre le Drawer
-  selectedOffer.value = null; // Réinitialise les données précédentes
+  drawerVisible.value = true;
+  selectedOffer.value = null;
   try {
-    const offer = await useBackend(`/offers/${offerId}`) as Offer;
-    selectedOffer.value = offer; // Remplit les détails de l'offre
+    selectedOffer.value = await useBackend(`/offers/${offerId}`) as offer;
   } catch (error) {
-    console.error('Erreur lors du fetch des détails de l\'offre :', error);
+    console.error('Erreur lors de la recuperation des détails de l\'offre :', error);
   }
 };
 
 const selectedOfferSite = computed(() => {
-  return $sites.find((s) => selectedOffer.value.url?.includes(s.domain));
+  return $sites.find((s) => selectedOffer.value?.url?.includes(s.domain));
 });
 
 onMounted(async ()=>{
@@ -97,7 +96,6 @@ onMounted(async ()=>{
         <InputText type="text" v-model="searchValue" placeholder="Search" />
       </div>
 
-      <!--Sites select-->
       <div class="card flex justify-center">
         <MultiSelect v-model="selectedSites" :options="$sites" optionLabel="name" placeholder="Select Sites" display="chip" class="w-full md:w-80">
           <template #option="slotProps">
@@ -164,6 +162,7 @@ onMounted(async ()=>{
             :location="job.location"
             :company="job.company"
             :link="job.url"
+            :score="job.score"
             @click="openOfferDetails(job.id)"
         />
       </div>
@@ -175,19 +174,20 @@ onMounted(async ()=>{
 
   <Drawer v-model:visible="drawerVisible" :dismissable="true" class="!w-screen md:!w-[75vw]">
     <template #header>
-      <div v-if="selectedOffer" class="text-2xl font-bold">
+        <div v-if="selectedOffer" class="flex flex-row items-center justify-start gap-4 text-2xl font-bold">
+          <img
+              v-if="selectedOfferSite"
+              :src="`/images/icons/sites/${selectedOfferSite.logo}`"
+              :alt="selectedOfferSite.name"
+              class="w-12 h-12 rounded-sm"
+              v-tooltip.left="`From ${selectedOfferSite.name}`"
+          />
           {{selectedOffer.title}}
-      </div>
+        </div>
     </template>
     <template v-if="selectedOffer">
-      <div class="w-full flex flex-row items-center justify-start gap-2">
-        <img
-            v-if="selectedOfferSite"
-            :src="`/images/icons/sites/${selectedOfferSite.logo}`"
-            :alt="selectedOfferSite.name"
-            class="w-12 h-12 rounded-sm"
-            v-tooltip.left="`From ${selectedOfferSite.name}`"
-        />
+      <div class="w-full flex flex-row items-center justify-between gap-2">
+        <JobScore :progress="selectedOffer.score" :width="'w-24'" />
         <a :href="selectedOffer.url" target="_blank">
           <Button icon="pi pi-external-link" severity="secondary" aria-label="Filter" size="large" />
         </a>

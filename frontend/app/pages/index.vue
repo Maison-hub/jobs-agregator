@@ -8,6 +8,7 @@ interface offer{
   description: string;
   location: string;
   company: string;
+  score: string;
   link: string;
 }
 
@@ -27,37 +28,38 @@ onMounted(async ()=>{
 </script>
 
 <template>
-  <section class="p-8">
-  <div class="flex w-full flex-col md:flex-row items-center justify-center gap-5 relative">
-    <NuxtLink to="/offers" class="w-full md:w-1/2 relative">
-      <ButtonJobList />
-    </NuxtLink>
-    <NuxtLink to="/scrape" class="w-full md:w-1/2">
-      <ButtonScrape />
-    </NuxtLink>
-  </div>
+  <section class="p-8 h-full flex items-center justify-center">
+    <div class="flex w-full flex-col md:flex-row items-center justify-center gap-5 relative">
+      <NuxtLink to="/offers" class="w-full md:w-1/2 relative">
+        <ButtonJobList />
+      </NuxtLink>
+      <NuxtLink to="/scrape" class="w-full md:w-1/2">
+        <ButtonScrape />
+      </NuxtLink>
+    </div>
   </section>
 
 
-  <div class="p-8">
-    <div id="result-list" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-      <template v-if="loadingOffers">
-        <JobPreviewSkeleton/>
-        <JobPreviewSkeleton/>
-        <JobPreviewSkeleton/>
-        <JobPreviewSkeleton/>
-        <JobPreviewSkeleton/>
-        <JobPreviewSkeleton/>
-      </template>
-      <div v-else v-for="job in offers" :key="job.id">
-        <JobPreview
-            :title="job.title"
-            :description="job.description"
-            :location="job.location"
-            :company="job.company"
-            :link="job.link"
-        />
-      </div>
-    </div>
-  </div>
+<!--  <div class="p-8">-->
+<!--    <div id="result-list" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">-->
+<!--      <template v-if="loadingOffers">-->
+<!--        <JobPreviewSkeleton/>-->
+<!--        <JobPreviewSkeleton/>-->
+<!--        <JobPreviewSkeleton/>-->
+<!--        <JobPreviewSkeleton/>-->
+<!--        <JobPreviewSkeleton/>-->
+<!--        <JobPreviewSkeleton/>-->
+<!--      </template>-->
+<!--      <div v-else v-for="job in offers" :key="job.id">-->
+<!--        <JobPreview-->
+<!--            :title="job.title"-->
+<!--            :description="job.description"-->
+<!--            :location="job.location"-->
+<!--            :company="job.company"-->
+<!--            :link="job.link"-->
+<!--            :score="job.score"-->
+<!--        />-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
 </template>

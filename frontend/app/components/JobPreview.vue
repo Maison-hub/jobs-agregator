@@ -8,6 +8,7 @@ const props = defineProps({
   description: String,
   location: String,
   company: String,
+  score: String,
   link: String,
 })
 
@@ -18,11 +19,14 @@ const site = computed(() => {
 
 <template>
   <div class="bg-surface-900 border border-surface-700 rounded-xl transition-all duration-300 shadow-primary-400/20 outline-transparent outline-2 hover:outline-primary-400 outline-offset-0 hover:outline-offset-[6px] ease-in-bounce shadow-none hover:shadow-xl cursor-pointer">
-    <div class="p-4 flex flex-row items-center justify-between">
-      <span class="font-bold font-lg">
+    <div class="p-4 flex flex-row items-center justify-between max-w-full">
+      <span class="font-bold font-lg text-ellipsis text-nowrap overflow-hidden shrink">
         {{props.title}}
       </span>
-      <Button icon="pi pi-star" severity="secondary" aria-label="Filter" v-tooltip.bottom="'Add to favorite'" />
+      <div v-if="props.score" class="ml-4 shrink-0 w-fit">
+        <JobScore :progress="props.score" :width="'w-24'" />
+      </div>
+<!--      <Button icon="pi pi-star" severity="secondary" aria-label="Filter" v-tooltip.bottom="'Add to favorite'" />-->
     </div>
     <div class="px-4">
       <div>
@@ -37,7 +41,7 @@ const site = computed(() => {
             <i class="pi pi-map-marker"></i>
             Nancy, Grand Est
           </span>
-        <span class="flex flex-row items-center gap-2">
+        <div class="flex flex-row items-center gap-2">
           <img
               v-if="site"
               :src="`/images/icons/sites/${site.logo}`"
@@ -48,7 +52,7 @@ const site = computed(() => {
           <a :href="link" target="_blank">
             <Button icon="pi pi-external-link" severity="secondary" aria-label="Filter" size="small" />
           </a>
-        </span>
+        </div>
       </div>
     </div>
   </div>

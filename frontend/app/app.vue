@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div>
+  <div class="min-h-screen">
     <div class="p-8 navbar">
       <div class="rounded-lg bg-surface-900 flex flex-row justify-between p-2 shadow-2xl" >
         <div class="flex flex-row items-center gap-2">
