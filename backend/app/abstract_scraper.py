@@ -59,7 +59,6 @@ class AbstractScraper(ABC):
                         await job_page.wait_for_selector(description_selector)
                         description = await job_page.locator(description_selector).first.inner_text()
                         await job_page.close()
-
                     job_data = schemas.JobCreate(
                         title=title.strip(),
                         company=company.strip(),
@@ -85,8 +84,8 @@ class AbstractScraper(ABC):
             await browser.close()
         yield f"Scraping completed.\n"
 
-
-    async def get_note(self, job: schemas.Job) -> Union[int, bool]:
+    @staticmethod
+    async def get_note(job: schemas.Job) -> Union[int, bool]:
         user_profile = "Je suis développeur frontend depuis 2 ans, spécialisé en Vue.js. Je maîtrise bien Nuxt.js, JavaScript, TypeScript, TailwindCSS et les API REST. Je recherche un poste en full remote ou avec un maximum de 1 jour sur site. Je préfère travailler dans une startup ou une entreprise innovante, avec une équipe dynamique et des projets stimulants."
         async with httpx.AsyncClient(timeout=httpx.Timeout(60.0)) as client:
             try:

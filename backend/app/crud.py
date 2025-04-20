@@ -1,12 +1,12 @@
 from sqlalchemy.orm import Session
 from app import models, schemas
 from typing import Optional
+from . import schemas
 
 
 # backend/app/crud.py
 def get_jobs(db: Session, skip: int = 0, limit: int = 10, title: Optional[str] = None, score_min: Optional[int] = None, score_max: Optional[int] = None, location: Optional[str] = None, sort_by: Optional[str] = None, sort_order: Optional[str] = "asc", domain: Optional[list[str]] = None):
     query = db.query(models.Job)
-
     if title:
         query = query.filter(models.Job.title.ilike(f"%{title}%"))
     if score_min is not None:
@@ -31,7 +31,15 @@ def get_jobs(db: Session, skip: int = 0, limit: int = 10, title: Optional[str] =
     return offers, total_count
 
 def get_job(db: Session, job_id: int):
-    return db.query(models.Job).filter(models.Job.id == job_id).first()
+    job = db.query(models.Job).filter(models.Job.id == job_id).first()
+    return schemas.JobCreate(
+        title=job.title,
+        company=job.company,
+        url=job.url,
+        description=job.description,
+        location=job.location,
+        score=job.score,
+    )
 
 def add_job(db: Session, job: schemas.JobCreate):
     #check if job already exists

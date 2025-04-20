@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, Query, HTTPException
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from app import database, models, crud ,schemas
+from app.abstract_scraper import AbstractScraper
 
 router = APIRouter()
 
@@ -29,8 +30,11 @@ def get_offer(offer_id: int, db: Session = Depends(database.get_db)):
     return crud.get_job(db, offer_id)
 
 @router.get("/offers/{offer_id}/score")
-def get_offer_score(offer_id: int, db: Session = Depends(database.get_db)):
+async def get_offer_score(offer_id: int, db: Session = Depends(database.get_db)):
     offer = crud.get_job(db, offer_id)
     if not offer:
         raise HTTPException(status_code=404, detail="Offer not found")
-    return {"score": offer.score}
+    if offer.score:
+        return {"score": offer.score}
+    score = await AbstractScraper.get_note(offer)
+    return {"score": score}
