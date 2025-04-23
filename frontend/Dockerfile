@@ -8,9 +8,10 @@ RUN apk add --no-cache bash
 
 COPY ./app/package*.json ./
 
-RUN npm install && npm cache clean --force
 
 COPY ./app .
+
+RUN npm install && npm cache clean --force
 
 EXPOSE 3000
 
