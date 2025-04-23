@@ -117,7 +117,7 @@ const startScraping = async () => {
             v-bind="slotProps.a11yAttrs"
             class="rounded-lg text-black border-none w-fit text-xl px-7 py-4 outline-2 outline-transparent hover:outline-primary-400 outline-offset-0 hover:outline-offset-[6px] duration-300 bg-primary-500 cursor-pointer ring-offset-surface-0 dark:ring-offset-surface-900 ring-primary transition-all ease-in-bounce"
         >
-          Lunch Scrape 🚀
+          Start Scraping 🚀
         </button>
       </Button>
       <div v-if="isScraping" class="flex flex-col items-center justify-center gap-2">
