@@ -23,3 +23,8 @@
 body {
     font-family: Tahoma, sans-serif;
 }
+
+.p-drawer-close-button{
+    aspect-ratio: 1/1;
+    min-width: 40px;
+}

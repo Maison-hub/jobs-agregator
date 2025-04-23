@@ -99,20 +99,20 @@ class AbstractScraper(ABC):
                 # Vérifiez le code de statut HTTP
                 if response.status_code != 200:
                     print(f"Erreur API: {response.status_code}, contenu: {response.text}")
-                    return False
+                    raise ValueError("Erreur API: réponse vide ou non valide.")
 
                 # Vérifiez si la réponse est un JSON valide
                 try:
                     score = response.json()
                 except ValueError:
                     print(f"Réponse non valide: {response.text}")
-                    return False
+                    raise ValueError("Erreur API: réponse au mauvais format.")
 
                 # Vérifiez si le score est un entier entre 0 et 100
                 if isinstance(score, int) and 0 <= score <= 100:
                     return score
                 print(f"Score invalide: {score}")
-                return False
+                raise ValueError("Erreur API: score invalide.")
             except Exception as e:
                 print(f"Erreur lors de la requête API: {e}")
-                return False
+                raise ValueError("Erreur lors de la requête API.")

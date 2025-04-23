@@ -10,17 +10,9 @@ from app import database, models, crud ,schemas
 
 router = APIRouter()
 
-@router.get("/test-route")
+@router.get("/ping")
 def test_route():
-    return {"message": "Hello, World! testtttttt"}
-
-async def fake_video_streamer():
-    for i in range(10):
-        yield f"{i}/10"
-
-@router.get("/test-stream")
-async def main():
-    return StreamingResponse(fake_video_streamer())
+    return {"message": "pong"}
 
 @router.get("/scrape")
 async def scrape_and_store_jobs(

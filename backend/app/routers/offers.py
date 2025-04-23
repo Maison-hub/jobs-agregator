@@ -27,7 +27,10 @@ def get_offers(
 
 @router.get("/offers/{offer_id}")
 def get_offer(offer_id: int, db: Session = Depends(database.get_db)):
-    return crud.get_job(db, offer_id)
+    job = crud.get_job(db, offer_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Offer not found")
+    return job
 
 @router.get("/offers/{offer_id}/score")
 async def get_offer_score(offer_id: int, db: Session = Depends(database.get_db)):
@@ -36,5 +39,6 @@ async def get_offer_score(offer_id: int, db: Session = Depends(database.get_db))
         raise HTTPException(status_code=404, detail="Offer not found")
     if offer.score:
         return {"score": offer.score}
-    score = await AbstractScraper.get_note(offer)
-    return {"score": score}
+    else:
+        score = await AbstractScraper.get_note(offer)
+        return {"score": score}

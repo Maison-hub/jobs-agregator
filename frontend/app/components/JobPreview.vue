@@ -8,7 +8,7 @@ const props = defineProps({
   description: String,
   location: String,
   company: String,
-  score: String,
+  score: Number,
   link: String,
 })
 

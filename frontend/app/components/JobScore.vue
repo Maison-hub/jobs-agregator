@@ -6,7 +6,7 @@ const props = defineProps({
     default: 'w-full'
   },
   progress: {
-    type: String,
+    type: Number,
     default: '0'
   },
   showNumber: {

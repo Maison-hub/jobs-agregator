@@ -23,6 +23,9 @@ export default defineNuxtConfig({
     directives: {
       include: ['Tooltip']
     },
+    composables:{
+        include: ['useToast']
+    },
     options: {
       theme: {
         preset: Aura

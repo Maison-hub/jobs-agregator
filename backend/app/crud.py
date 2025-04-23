@@ -32,7 +32,8 @@ def get_jobs(db: Session, skip: int = 0, limit: int = 10, title: Optional[str] =
 
 def get_job(db: Session, job_id: int):
     job = db.query(models.Job).filter(models.Job.id == job_id).first()
-    return schemas.JobCreate(
+    return schemas.Job(
+        id=job.id,
         title=job.title,
         company=job.company,
         url=job.url,

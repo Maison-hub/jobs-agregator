@@ -6,6 +6,7 @@ import InputText from 'primevue/inputtext';
 import MultiSelect from 'primevue/multiselect';
 import Button from 'primevue/button';
 import Select from 'primevue/select';
+import { useToast } from 'primevue/usetoast';
 
 
 interface offer{
@@ -43,27 +44,29 @@ const onSearch = async ()=>{
   await fetchOffers();
 }
 
-const fetchOffers = async (newPageValue?: number, newLimit?: number) => {
-  loadingOffers.value = true
-  if (newPageValue) {
-    page.value = newPageValue + 1
-  }
-  if (newLimit) {
-    offersPerPage.value = newLimit
-  }
-  let sitesQuery = ''
-  selectedSites.value.forEach((sites)=>{
-    sitesQuery += `&domain=${sites.domain}`
-  })
-  if(orderBy.value){
-    sitesQuery += `&order_by=${orderBy.value}`
+const fetchOffers = async (newPageValue?: number, newLimit?: number, debug: string = "default") => {
+
+  console.log('>>>>> iciiii', newPageValue, debug);
+  loadingOffers.value = true;
+
+  const currentPage = newPageValue !== undefined ? newPageValue + 1 : page.value;
+  const currentLimit = newLimit || offersPerPage.value;
+
+  let sitesQuery = '';
+  selectedSites.value.forEach((sites) => {
+    sitesQuery += `&domain=${sites.domain}`;
+  });
+  if (orderBy.value) {
+    sitesQuery += `&order_by=${orderBy.value}`;
   }
 
-  const response = await useBackend(`/offers?page=${page.value}&limit=${offersPerPage.value}${sitesQuery}`) as offerResponse
-  total_count.value = response.total_count
-  offers.value = response.offers
-  loadingOffers.value = false
-}
+  const response = await useBackend(`/offers?page=${currentPage}&limit=${currentLimit}${sitesQuery}`) as offerResponse;
+  total_count.value = response.total_count;
+  offers.value = response.offers;
+  loadingOffers.value = false;
+
+  scrollTop();
+};
 
 const drawerVisible = ref(false);
 const selectedOffer = ref<offer | null>(null);
@@ -81,6 +84,34 @@ const openOfferDetails = async (offerId: string) => {
 const selectedOfferSite = computed(() => {
   return $sites.find((s) => selectedOffer.value?.url?.includes(s.domain));
 });
+
+const toast = useToast()
+
+const isGettingNote = ref(false);
+const getOferNote = async (offerId: string) => {
+  isGettingNote.value = true
+  try {
+    const response = await useBackend(`/offers/${offerId}/score`) as { score: number };
+    if (response && response.score) {
+      selectedOffer.value!.score = response.score;
+    } else {
+      console.error('Error while getting offer note');
+    }
+    console.log(response)
+  }
+  catch (e){
+    console.error('Error while getting offer note', e);
+    toast.add({ severity: 'error', summary: 'Failed to get note', detail: 'Une erreur est survenue pendant la recupération de la note', life: 3000 });
+  }
+  isGettingNote.value = false
+};
+
+const scrollTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+};
 
 onMounted(async ()=>{
   await fetchOffers()
@@ -169,12 +200,17 @@ onMounted(async ()=>{
     </div>
   </div>
   <div class="fixed bottom-0 w-full">
-    <Paginator @update:rows="(n) => {page = 1 ;fetchOffers(0, n)}" @page="(o) => {fetchOffers(o.page, o.rows); console.log(o);}" :rows="offersPerPage" :totalRecords="total_count" :rowsPerPageOptions="[12, 20, 30, 50]"></Paginator>
+    <Paginator
+        @page="(o) => fetchOffers(o.page, o.rows, '@page')"
+        :rows="offersPerPage"
+        :totalRecords="total_count"
+        :rowsPerPageOptions="[12, 20, 30, 50]"
+    />
   </div>
 
-  <Drawer v-model:visible="drawerVisible" :dismissable="true" class="!w-screen md:!w-[75vw]">
+  <Drawer v-model:visible="drawerVisible" :dismissable="true" class="!w-screen md:!w-[75vw] max-w-xl">
     <template #header>
-        <div v-if="selectedOffer" class="flex flex-row items-center justify-start gap-4 text-2xl font-bold">
+        <div v-if="selectedOffer" class="flex flex-row items-center justify-start gap-4 text-2xl font-bold overflow-hidden">
           <img
               v-if="selectedOfferSite"
               :src="`/images/icons/sites/${selectedOfferSite.logo}`"
@@ -187,7 +223,16 @@ onMounted(async ()=>{
     </template>
     <template v-if="selectedOffer">
       <div class="w-full flex flex-row items-center justify-between gap-2">
-        <JobScore :progress="selectedOffer.score" :width="'w-24'" />
+        <div v-if="selectedOffer.score">
+          <JobScore :progress="selectedOffer.score" :width="'w-24'" />
+        </div>
+        <div v-else>
+            <Button :label="isGettingNote ? 'Getting note ...' : 'Get notes' "
+                    :icon="isGettingNote ? 'pi pi-spin pi-spinner' : 'pi pi-sync'"
+                    :disabled="isGettingNote"
+                    severity="secondary"
+                    @click="getOferNote(selectedOffer.id)"/>
+        </div>
         <a :href="selectedOffer.url" target="_blank">
           <Button icon="pi pi-external-link" severity="secondary" aria-label="Filter" size="large" />
         </a>

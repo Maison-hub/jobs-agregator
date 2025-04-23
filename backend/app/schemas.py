@@ -2,6 +2,7 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict
 
 class JobBase(BaseModel):
+    id: Optional[int] = None
     title: str
     company: str
     url: str
