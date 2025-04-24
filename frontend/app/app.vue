@@ -18,7 +18,9 @@
           </NuxtLink>
         </div>
         <div>
-          <Button icon="pi pi-cog" variant="text" severity="secondary" aria-label="Filter" v-tooltip.bottom="'Settings'" />
+          <NuxtLink to="/settings">
+            <Button icon="pi pi-cog" variant="text" severity="secondary" aria-label="Filter" v-tooltip.bottom="'Settings'" />
+          </NuxtLink>
         </div>
       </div>
     </div>

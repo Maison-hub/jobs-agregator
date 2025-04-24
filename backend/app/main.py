@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from app import database, models, crud ,schemas
-from .routers import scrape, offers
+from .routers import scrape, offers, settings
 from app.scrapers.WelcomeToTheJungleScraper import WelcomeToTheJungleScraper
 import asyncio
 import json
@@ -15,6 +15,7 @@ load_dotenv()
 
 app.include_router(scrape.router)
 app.include_router(offers.router)
+app.include_router(settings.router)
 
 # Initialisation de la base de données
 models.Base.metadata.create_all(bind=database.engine)

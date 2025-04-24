@@ -20,6 +20,7 @@ export default defineNuxtConfig({
     '@primevue/nuxt-module'
   ],
   primevue: {
+    importTheme: { from: '@/assets/themes/mytheme.ts' },
     directives: {
       include: ['Tooltip']
     },
@@ -28,7 +29,7 @@ export default defineNuxtConfig({
     },
     options: {
       theme: {
-        preset: Aura
+        preset: Aura,
       }
     }
   }

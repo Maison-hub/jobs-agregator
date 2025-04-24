@@ -17,3 +17,11 @@ class JobCreate(JobBase):
 class Job(JobBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
+
+class UserOptions(BaseModel):
+    job_title: Optional[str] = None
+    profile_description: Optional[str] = None
+    location: Optional[str] = None
+    ollama_url: Optional[list[str]] = None
+    ollama_score_model: Optional[str] = None
+    ollama_cv_model: Optional[str] = None
