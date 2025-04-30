@@ -52,3 +52,14 @@ def add_job(db: Session, job: schemas.JobCreate):
     db.commit()
     db.refresh(db_job)
     return db_job
+
+def get_user_preferences(db: Session):
+    preferences = db.query(models.UserOptions).first()
+    return schemas.UserOptions(
+        job_title=preferences.job_title,
+        profile_description=preferences.profile_description,
+        location=preferences.location,
+        ollama_url=preferences.ollama_url,
+        ollama_score_model=preferences.ollama_score_model,
+        ollama_cv_model=preferences.ollama_cv_model
+    )

@@ -3,11 +3,24 @@ from sqlalchemy.orm import Session
 import asyncio
 from .. import schemas, models, crud
 from ..abstract_scraper import AbstractScraper, ScraperOptions
+from urllib.parse import urlencode, urlunparse
 
 class WelcomeToTheJungleScraper(AbstractScraper):
-    url = "https://www.welcometothejungle.com/fr/jobs?query=developer%20web&page=1"
+    baseUrl = "https://www.welcometothejungle.com/fr/jobs?query=developer%20web&page=1"
+    user_preferences = None
+
+    def __init__(self, user_preferences=None):
+        self.user_preferences = user_preferences
 
     def forge_url(self) -> str:
+        # Check if user_preferences is provided
+        if self.user_preferences:
+            # Extract the job title and location from user preferences
+            job_title = self.user_preferences.job_title
+            location = self.user_preferences.location
+
+            # Construct the URL with the job title and location
+            self.url = f"https://www.welcometothejungle.com/fr/jobs?query={job_title}&aroundQuery={location}"
         return f"{self.url}"
 
     def get_options(self)-> ScraperOptions :

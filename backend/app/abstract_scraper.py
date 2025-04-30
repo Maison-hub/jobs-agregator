@@ -6,6 +6,8 @@ from playwright.async_api import async_playwright
 import asyncio
 from . import schemas, models, crud
 
+def __init__(self, user_preferences=None):
+    self.user_preferences = user_preferences
 
 class ScraperOptions(TypedDict):
     url: str

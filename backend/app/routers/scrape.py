@@ -7,6 +7,7 @@ from app.scrapers.WelcomeToTheJungleScraper import WelcomeToTheJungleScraper
 from app.scrapers.FranceTravailScraper import FranceTravailScraper
 from app.scrapers.HelloWorkScraper import HelloWorkScraper
 from app import database, models, crud ,schemas
+from app import crud
 
 router = APIRouter()
 
@@ -23,9 +24,10 @@ async def scrape_and_store_jobs(
     if not sites or len(sites) == 0:
         raise HTTPException(status_code=400, detail="You need to specify at least one site to scrape")
     async def scrape_generator() -> AsyncGenerator[str, None]:
+        preferences = crud.get_user_preferences(db)
         if "welcometothejungle" in sites:
             yield "Starting WelcomeToTheJungle scraper...\n"
-            scraper = WelcomeToTheJungleScraper()
+            scraper = WelcomeToTheJungleScraper(preferences)
             async for message in scraper.scrape_jobs(db=db, save=True, ai=ai):
                 yield message
             yield f"Scraped jobs from WelcomeToTheJungle.\n"
