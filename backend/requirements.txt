@@ -6,3 +6,4 @@ pymysql
 playwright
 python-dotenv
 httpx
+requests

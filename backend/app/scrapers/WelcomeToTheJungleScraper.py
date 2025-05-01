@@ -1,12 +1,13 @@
 from playwright.async_api import async_playwright
 from sqlalchemy.orm import Session
 import asyncio
+from .utils import get_coordinates_from_api_adresse
 from .. import schemas, models, crud
 from ..abstract_scraper import AbstractScraper, ScraperOptions
-from urllib.parse import urlencode, urlunparse
+from urllib.parse import quote
 
 class WelcomeToTheJungleScraper(AbstractScraper):
-    baseUrl = "https://www.welcometothejungle.com/fr/jobs?query=developer%20web&page=1"
+    url = "https://www.welcometothejungle.com/fr/jobs?query=developer%20web&page=1"
     user_preferences = None
 
     def __init__(self, user_preferences=None):
@@ -16,11 +17,13 @@ class WelcomeToTheJungleScraper(AbstractScraper):
         # Check if user_preferences is provided
         if self.user_preferences:
             # Extract the job title and location from user preferences
-            job_title = self.user_preferences.job_title
-            location = self.user_preferences.location
-
-            # Construct the URL with the job title and location
-            self.url = f"https://www.welcometothejungle.com/fr/jobs?query={job_title}&aroundQuery={location}"
+            job_title = self.user_preferences.job_title if self.user_preferences and self.user_preferences.job_title else "Développeur web"
+            location = self.user_preferences.location if self.user_preferences and self.user_preferences.location else "Paris"
+            latitude, longitude = get_coordinates_from_api_adresse(location)
+            if latitude and longitude:
+                self.url = f"https://www.welcometothejungle.com/fr/jobs?query={quote(str(job_title))}&aroundLatLng={quote(str(latitude))}%2C{quote(str(longitude))}&refinementList%5Boffices.country_code%5D%5B%5D=FR"
+            else:
+                self.url = f"https://www.welcometothejungle.com/fr/jobs?query={quote(str(job_title))}&aroundQuery={quote(str(location))}&refinementList%5Boffices.country_code%5D%5B%5D=FR"
         return f"{self.url}"
 
     def get_options(self)-> ScraperOptions :
