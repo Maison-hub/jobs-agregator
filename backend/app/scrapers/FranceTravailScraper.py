@@ -13,7 +13,6 @@ class FranceTravailScraper(AbstractScraper):
     url = "https://candidat.francetravail.fr/offres/recherche?lieux=44R&motsCles=D%C3%A9veloppeur+web&offresPartenaires=true&rayon=10&tri=0"
 
     def forge_url(self) -> str:
-        print(">>>>> User preferences:", self.user_preferences)
         if self.user_preferences.franceTravail_url:
             return self.user_preferences.franceTravail_url
         else:
