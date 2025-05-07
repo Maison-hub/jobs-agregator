@@ -23,3 +23,6 @@ class UserOptions(Base):
     ollama_url = Column(String(500), index=True)
     ollama_score_model = Column(String(200), index=True)
     ollama_cv_model = Column(String(200), index=True)
+    franceTravail_url = Column(String(500), index=True)
+    helloWork_url = Column(String(500), index=True)
+    welcomeToTheJungle_url = Column(String(500), index=True)

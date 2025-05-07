@@ -37,9 +37,9 @@ const site = computed(() => {
     </div>
     <div>
       <div class="p-4 flex flex-row items-center justify-between">
-          <span class="text-white/50 text-sm">
+          <span class="text-white/50 text-sm" v-if="props.location">
             <i class="pi pi-map-marker"></i>
-            Nancy, Grand Est
+            {{ props.location }}
           </span>
         <div class="flex flex-row items-center gap-2">
           <img

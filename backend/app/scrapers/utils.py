@@ -17,3 +17,4 @@ def get_coordinates_from_api_adresse(city_name):
     else:
         print(f"Erreur lors de la requête : {response.status_code}")
         return None, None
+

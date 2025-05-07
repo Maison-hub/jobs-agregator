@@ -1,12 +1,16 @@
 from playwright.async_api import async_playwright
 from sqlalchemy.orm import Session
 import asyncio
+from typing import Optional
 from .utils import get_coordinates_from_api_adresse
 from .. import schemas, models, crud
 from ..abstract_scraper import AbstractScraper, ScraperOptions
 from urllib.parse import quote
 
 class WelcomeToTheJungleScraper(AbstractScraper):
+    def __init__(self, user_preferences: Optional[schemas.UserOptions] = None):
+        super().__init__(user_preferences) 
+        
     url = "https://www.welcometothejungle.com/fr/jobs?query=developer%20web&page=1"
     user_preferences = None
 

@@ -1,14 +1,23 @@
+import asyncio
 from playwright.async_api import async_playwright
 from sqlalchemy.orm import Session
-import asyncio
+from typing import Optional
 from .. import schemas, models, crud
 from ..abstract_scraper import AbstractScraper, ScraperOptions
 
 class FranceTravailScraper(AbstractScraper):
+
+    def __init__(self, user_preferences: Optional[schemas.UserOptions] = None):
+        super().__init__(user_preferences) 
+
     url = "https://candidat.francetravail.fr/offres/recherche?lieux=44R&motsCles=D%C3%A9veloppeur+web&offresPartenaires=true&rayon=10&tri=0"
 
     def forge_url(self) -> str:
-        return f"{self.url}"
+        print(">>>>> User preferences:", self.user_preferences)
+        if self.user_preferences.franceTravail_url:
+            return self.user_preferences.franceTravail_url
+        else:
+            return f"{self.url}"
 
     def get_options(self)-> ScraperOptions :
         return {

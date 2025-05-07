@@ -6,9 +6,6 @@ from playwright.async_api import async_playwright
 import asyncio
 from . import schemas, models, crud
 
-def __init__(self, user_preferences=None):
-    self.user_preferences = user_preferences
-
 class ScraperOptions(TypedDict):
     url: str
     results_selector: str
@@ -20,6 +17,10 @@ class ScraperOptions(TypedDict):
     description_selector: Optional[str]
 
 class AbstractScraper(ABC):
+
+    def __init__(self, user_preferences: Optional[schemas.UserOptions] = None):
+        self.user_preferences = user_preferences
+
     @abstractmethod
     def get_options(self) -> ScraperOptions:
         pass

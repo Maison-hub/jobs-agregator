@@ -22,6 +22,9 @@ class UserOptions(BaseModel):
     job_title: Optional[str] = None
     profile_description: Optional[str] = None
     location: Optional[str] = None
-    ollama_url: Optional[list[str]] = None
+    ollama_url: Optional[str] = None
     ollama_score_model: Optional[str] = None
     ollama_cv_model: Optional[str] = None
+    franceTravail_url: Optional[str] = None
+    helloWork_url: Optional[str] = None
+    welcomeToTheJungle_url: Optional[str] = None

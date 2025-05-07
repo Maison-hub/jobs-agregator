@@ -33,13 +33,13 @@ async def scrape_and_store_jobs(
             yield f"Scraped jobs from WelcomeToTheJungle.\n"
         if "francetravail" in sites:
             yield "Starting FranceTravail scraper...\n"
-            scraper = FranceTravailScraper()
+            scraper = FranceTravailScraper(user_preferences=preferences)
             async for message in scraper.scrape_jobs(db=db, save=True, ai=ai):
                 yield message
             yield f"Finish scraped jobs from FranceTravail.\n"
         if "hellowork" in sites:
             yield "Starting HelloWork scraper...\n"
-            scraper = HelloWorkScraper()
+            scraper = HelloWorkScraper(preferences)
             async for message in scraper.scrape_jobs(db=db, save=True, ai=ai):
                 yield message
             yield f"Finish scraped jobs from HelloWork.\n"

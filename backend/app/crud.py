@@ -61,5 +61,8 @@ def get_user_preferences(db: Session):
         location=preferences.location,
         ollama_url=preferences.ollama_url,
         ollama_score_model=preferences.ollama_score_model,
-        ollama_cv_model=preferences.ollama_cv_model
+        ollama_cv_model=preferences.ollama_cv_model,
+        franceTravail_url=preferences.franceTravail_url,
+        welcomeToTheJungle_url=preferences.welcomeToTheJungle_url,
+        helloWork_url=preferences.helloWork_url,
     )

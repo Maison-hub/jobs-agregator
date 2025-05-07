@@ -46,7 +46,6 @@ const onSearch = async ()=>{
 
 const fetchOffers = async (newPageValue?: number, newLimit?: number, debug: string = "default") => {
 
-  console.log('>>>>> iciiii', newPageValue, debug);
   loadingOffers.value = true;
 
   const currentPage = newPageValue !== undefined ? newPageValue + 1 : page.value;
