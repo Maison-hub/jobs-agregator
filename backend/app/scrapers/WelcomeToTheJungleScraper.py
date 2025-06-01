@@ -20,6 +20,8 @@ class WelcomeToTheJungleScraper(AbstractScraper):
     def forge_url(self) -> str:
         # Check if user_preferences is provided
         if self.user_preferences:
+            if self.user_preferences.welcomeToTheJungle_url:
+                return self.user_preferences.welcomeToTheJungle_url
             # Extract the job title and location from user preferences
             job_title = self.user_preferences.job_title if self.user_preferences and self.user_preferences.job_title else "Développeur web"
             location = self.user_preferences.location if self.user_preferences and self.user_preferences.location else "Paris"

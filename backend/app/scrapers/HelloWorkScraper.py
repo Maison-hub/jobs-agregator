@@ -18,8 +18,9 @@ class HelloWorkScraper(AbstractScraper):
 
     def forge_url(self) -> str:
         # Check if user_preferences is provided
-        print(f">>>>> User preferences: {self.user_preferences}")
         if self.user_preferences:
+            if self.user_preferences.helloWork_url:
+                return self.user_preferences.helloWork_url
             # Extract the job title and location from user preferences
             job_title = self.user_preferences.job_title if self.user_preferences and self.user_preferences.job_title else "Développeur web"
             location = self.user_preferences.location if self.user_preferences and self.user_preferences.location else "Paris"
